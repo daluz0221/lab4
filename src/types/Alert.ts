@@ -2,9 +2,9 @@ export interface Alert {
   id: string;
   alertType: string;
   responsible: string;
-  priority: 'low' | 'medium' | 'high';
+  priority: 'Baja' | 'Media' | 'Alta';
   driver: string;
   generatingUnit: string;
-  state: 'active' | 'pending' | 'resolved';
+  state: 'Resuelto' | 'En Proceso' | 'En Espera';
   generationDate: string;
 }

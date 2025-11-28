@@ -4,15 +4,26 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table"
 import { Badge } from "../ui/badge"
 import { useState } from "react"
-import { mockAlerts } from "@/data/mockData"
+import { useAlerts } from "@/hook/useAlerts"
 
 
-const alerts = mockAlerts
+
 
 export const AlertsTable = () => {
-    const [searchTerm, setSearchTerm] = useState('');
+
+  const [searchTerm, setSearchTerm] = useState('');
   const [priorityFilter, setPriorityFilter] = useState<string>('all');
   const [stateFilter, setStateFilter] = useState<string>('all');
+  const { data, isLoading, error } = useAlerts();
+
+  if (isLoading) return <div>Loading alerts...</div>
+  if (error) return <div>Error loading alerts: {(error as Error).message}</div>
+  if(!data) return <div>No data available</div>;
+
+
+  const alerts = data?.getAllAlerts || [];
+  
+
 
   const filteredAlerts = alerts.filter(alert => {
     const matchesSearch = 
@@ -30,18 +41,18 @@ export const AlertsTable = () => {
 
   const getPriorityVariant = (priority: string) => {
     switch (priority) {
-      case 'high': return 'destructive';
-      case 'medium': return 'warning';
-      case 'low': return 'success';
+      case 'Alta': return 'destructive';
+      case 'Media': return 'warning';
+      case 'Baja': return 'success';
       default: return 'secondary';
     }
   };
 
   const getStateVariant = (state: string) => {
     switch (state) {
-      case 'active': return 'destructive';
-      case 'pending': return 'warning';
-      case 'resolved': return 'success';
+      case 'En Espera': return 'destructive';
+      case 'En Proceso': return 'warning';
+      case 'Resuelto': return 'success';
       default: return 'secondary';
     }
   };
@@ -75,9 +86,9 @@ export const AlertsTable = () => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Priorities</SelectItem>
-              <SelectItem value="high">High</SelectItem>
-              <SelectItem value="medium">Medium</SelectItem>
-              <SelectItem value="low">Low</SelectItem>
+              <SelectItem value="Alta">Alta</SelectItem>
+              <SelectItem value="Media">Media</SelectItem>
+              <SelectItem value="Baja">Baja</SelectItem>
             </SelectContent>
           </Select>
           <Select value={stateFilter} onValueChange={setStateFilter}>
@@ -87,9 +98,9 @@ export const AlertsTable = () => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All States</SelectItem>
-              <SelectItem value="active">Active</SelectItem>
-              <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="resolved">Resolved</SelectItem>
+              <SelectItem value="Resuelto">Resuelto</SelectItem>
+              <SelectItem value="En Espera">En Espera</SelectItem>
+              <SelectItem value="En Proceso">En Proceso</SelectItem>
             </SelectContent>
           </Select>
         </div>
